@@ -1,5 +1,6 @@
 // src/controllers/coupon.controller.js
 const { connectToMongoDB } = require('../config/database');
+const { sendNotification } = require('../utils/notification');
 const jwt = require('jsonwebtoken');
 
 /**
@@ -48,6 +49,7 @@ const createCoupon = async (req, res) => {
     };
 
     const result = await coupons.insertOne(coupon);
+    sendNotification('New Coupon Created', `Code: ${normalizedCode}`);
     return res.status(201).json({ message: 'Coupon created', couponId: result.insertedId });
   } catch (error) {
     console.error('createCoupon error:', error);

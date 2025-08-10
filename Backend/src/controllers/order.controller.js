@@ -1,5 +1,6 @@
 // src/controllers/order.controller.js
 const { connectToMongoDB } = require('../config/database');
+const { sendNotification } = require('../utils/notification');
 const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
 
@@ -68,6 +69,7 @@ const createOrder = async (req, res) => {
         };
 
         const result = await ordersCol.insertOne(order);
+        sendNotification('New Order Received', `Order ID: ${result.insertedId}`);
         res.status(201).json({ message: 'Order placed successfully', orderId: result.insertedId });
 
     } catch (error) {
